@@ -1,187 +1,74 @@
-# Dokumentasi API Sistem Perpustakaan
+# Dokumentasi API
 
-Ini adalah dokumentasi dasar untuk RESTful API Sistem Perpustakaan.
+Ini adalah dokumentasi untuk REST API Sistem Manajemen Perpustakaan.
 
-## Autentikasi
+## Base URL
 
-### 1. Register User
+Semua URL yang tercantum di sini menggunakan base URL: `/api`
 
-- **Endpoint:** `POST /api/auth/register`
-- **Deskripsi:** Mendaftarkan user baru (admin).
-- **Request Body:**
-  ```json
-  {
-    "name": "Admin User",
-    "email": "admin@example.com",
-    "password": "password123",
-    "role": "admin"
-  }
-  ```
-- **Response Sukses (200):**
-  ```json
-  {
-    "status": true,
-    "message": "User created successfully",
-    "data": {
-      "id": 1,
-      "name": "Admin User",
-      "email": "admin@example.com",
-      "role": "admin",
-      "created_at": "2025-12-14T14:00:00Z",
-      "updated_at": "2025-12-14T14:00:00Z"
-    }
-  }
-  ```
+## Otentikasi
 
-### 2. Login User
+Endpoint untuk otentikasi tidak memerlukan token JWT.
 
-- **Endpoint:** `POST /api/auth/login`
-- **Deskripsi:** Login untuk mendapatkan token JWT.
-- **Request Body:**
-  ```json
-  {
-    "email": "admin@example.com",
-    "password": "password123"
-  }
-  ```
-- **Response Sukses (200):**
-  ```json
-  {
-    "status": true,
-    "message": "Login successful",
-    "data": {
-      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-    }
-  }
-  ```
+| Method | Endpoint         | Deskripsi                  |
+| ------ | ---------------- | -------------------------- |
+| `POST` | `/auth/login`    | Login untuk mendapatkan token. |
+| `POST` | `/auth/register` | Registrasi pengguna baru.  |
 
 ---
 
-## CRUD (Protected)
+## Rute Terproteksi
 
-Semua endpoint di bawah ini memerlukan header `Authorization: Bearer <token>`.
+Semua endpoint di bawah ini memerlukan header `Authorization: Bearer <token>` dengan token JWT yang valid dan role **admin**.
 
-### Anggota
+### 1. Anggota
 
-- **Endpoint:** `GET /api/anggota`
-- **Deskripsi:** Mendapatkan daftar anggota dengan pagination dan search.
-- **Query Params:** `page` (number), `pageSize` (number), `search` (string, by nama)
-- **Contoh:** `GET /api/anggota?page=1&pageSize=5&search=john`
-- **Response Sukses (200):**
-  ```json
-  {
-    "status": true,
-    "message": "All anggota",
-    "data": {
-      "data": [
-        {
-          "id": 1,
-          "nama": "John Doe",
-          "alamat": "Jl. Pahlawan No. 1",
-          "no_telp": "08123456789",
-          "created_at": "2025-12-14T14:05:00Z",
-          "updated_at": "2025-12-14T14:05:00Z"
-        }
-      ],
-      "total": 1,
-      "page": 1,
-      "pageSize": 5,
-      "totalPages": 1
-    }
-  }
-  ```
+| Method   | Endpoint        | Deskripsi                       |
+| -------- | --------------- | ------------------------------- |
+| `GET`    | `/anggota/`     | Mendapatkan semua data anggota. |
+| `GET`    | `/anggota/:id`  | Mendapatkan anggota by ID.      |
+| `POST`   | `/anggota/`     | Membuat anggota baru.           |
+| `PUT`    | `/anggota/:id`  | Memperbarui data anggota.       |
+| `DELETE` | `/anggota/:id`  | Menghapus data anggota.         |
 
-- **Endpoint:** `POST /api/anggota`
-- **Deskripsi:** Membuat anggota baru.
-- **Request Body:**
-  ```json
-  {
-    "nama": "Jane Doe",
-    "alamat": "Jl. Merdeka No. 10",
-    "no_telp": "08987654321"
-  }
-  ```
+### 2. Kategori
 
----
+| Method   | Endpoint         | Deskripsi                        |
+| -------- | ---------------- | -------------------------------- |
+| `GET`    | `/kategori/`     | Mendapatkan semua data kategori. |
+| `GET`    | `/kategori/:id`  | Mendapatkan kategori by ID.      |
+| `POST`   | `/kategori/`     | Membuat kategori baru.           |
+| `PUT`    | `/kategori/:id`  | Memperbarui data kategori.       |
+| `DELETE` | `/kategori/:id`  | Menghapus data kategori.         |
 
-### Buku
+### 3. Penerbit
 
-- **Endpoint:** `GET /api/buku`
-- **Deskripsi:** Mendapatkan daftar buku dengan pagination dan search.
-- **Query Params:** `page` (number), `pageSize` (number), `search` (string, by judul)
-- **Contoh:** `GET /api/buku?page=1&pageSize=10&search=golang`
-- **Response Sukses (200):**
-  ```json
-  {
-    "status": true,
-    "message": "All buku",
-    "data": {
-      "data": [
-        {
-            "id": 1,
-            "judul": "Belajar Golang",
-            "penulis": "John Doe",
-            "tahun_terbit": 2023,
-            "stok": 10,
-            "kategori_id": 1,
-            "penerbit_id": 1,
-            "created_at": "2025-12-14T14:10:00Z",
-            "updated_at": "2025-12-14T14:10:00Z"
-        }
-      ],
-      "total": 1,
-      "page": 1,
-      "pageSize": 10,
-      "totalPages": 1
-    }
-  }
-  ```
----
+| Method   | Endpoint         | Deskripsi                       |
+| -------- | ---------------- | ------------------------------- |
+| `GET`    | `/penerbit/`     | Mendapatkan semua data penerbit.|
+| `GET`    | `/penerbit/:id`  | Mendapatkan penerbit by ID.     |
+| `POST`   | `/penerbit/`     | Membuat penerbit baru.          |
+| `PUT`    | `/penerbit/:id`  | Memperbarui data penerbit.      |
+| `DELETE` | `/penerbit/:id`  | Menghapus data penerbit.        |
 
-### Transaksi
+### 4. Buku
 
-#### 1. Peminjaman Buku
+| Method   | Endpoint      | Deskripsi                    |
+| -------- | ------------- | ---------------------------- |
+| `GET`    | `/buku/`      | Mendapatkan semua data buku. |
+| `GET`    | `/buku/:id`   | Mendapatkan buku by ID.      |
+| `POST`   | `/buku/`      | Membuat buku baru.           |
+| `PUT`    | `/buku/:id`   | Memperbarui data buku.       |
+| `DELETE` | `/buku/:id`   | Menghapus data buku.         |
 
-- **Endpoint:** `POST /api/peminjaman`
-- **Deskripsi:** Membuat transaksi peminjaman baru. Stok buku akan otomatis berkurang.
-- **Request Body:**
-  ```json
-  {
-    "anggota_id": 1,
-    "tanggal_pinjam": "2025-12-14",
-    "tanggal_kembali": "2025-12-21",
-    "detail": [
-      {
-        "buku_id": 1,
-        "qty": 1
-      }
-    ]
-  }
-  ```
+### 5. Peminjaman
 
-#### 2. Pengembalian Buku
+| Method   | Endpoint         | Deskripsi                |
+| -------- | ---------------- | ------------------------ |
+| `POST`   | `/peminjaman/`   | Membuat data peminjaman. |
 
-- **Endpoint:** `POST /api/pengembalian`
-- **Deskripsi:** Membuat transaksi pengembalian. Stok buku akan otomatis bertambah dan denda akan dihitung jika terlambat.
-- **Request Body:**
-  ```json
-  {
-    "peminjaman_id": 1,
-    "tanggal_pengembalian": "2025-12-22"
-  }
-  ```
-- **Response Sukses (200):**
-  ```json
-  {
-    "status": true,
-    "message": "Pengembalian created successfully",
-    "data": {
-        "id": 1,
-        "peminjaman_id": 1,
-        "tanggal_pengembalian": "2025-12-22T00:00:00Z",
-        "denda": 1000,
-        "created_at": "2025-12-14T14:15:00Z",
-        "updated_at": "2025-12-14T14:15:00Z"
-    }
-  }
-  ```
+### 6. Pengembalian
+
+| Method   | Endpoint           | Deskripsi                  |
+| -------- | ------------------ | -------------------------- |
+| `POST`   | `/pengembalian/`   | Membuat data pengembalian. |
